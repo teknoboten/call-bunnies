@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jackrabbit Class Getter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen flex items-center justify-center p-4"
+  >
+    <div class="max-w-4xl w-full bg-white shadow-2xl rounded-3xl p-10">
+      <h1 class="text-4xl font-extrabold mb-8 text-gray-800 text-center">
+        Jackrabbit Class Getter
+      </h1>
+
+      <!-- Class Type Selection -->
+      <h2 class="text-xl font-semibold mb-4">
+        What are you looking for today?
+      </h2>
+      <div class="flex flex-wrap gap-4 mb-8" id="classTypeButtons">
+        <button
+          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-indigo-600 text-white"
+          id="allClasses"
+          data-type=""
+        >
+          All Classes
+        </button>
+        <button
+          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-gray-300 text-gray-700"
+          id="camps"
+          data-type="Camp"
+        >
+          Camps
+        </button>
+        <button
+          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-gray-300 text-gray-700"
+          id="afterschool"
+          data-type="After%School%DnD"
+        >
+          Afterschool
+        </button>
+      </div>
+
+      <!-- Session Selection -->
+      <h2 class="text-xl font-semibold mb-4">Which Session?</h2>
+      <select
+        id="sessionField"
+        class="w-full p-3 border rounded-xl mb-8 shadow-sm"
+      >
+        <option value="">All Sessions</option>
+        <optgroup label="Winter">
+          <option value="win2026-1">Winter</option>
+        </optgroup>
+        <optgroup label="Spring">
+          <option value="2025%Spring%1">Spring (Session 1)</option>
+          <option value="2025%Spring%2">Spring (Session 2)</option>
+          <option value="2025%Spring%Break">Spring Break</option>
+        </optgroup>
+        <optgroup label="Summer">
+          <option value="sum25-1">Summer (Session 1)</option>
+          <option value="sum25-2">Summer (Session 2)</option>
+        </optgroup>
+        <optgroup label="Fall">
+          <option value="fall25-1">Fall</option>
+        </optgroup>
+      </select>
+
+      <!-- Description Toggle -->
+      <h2 class="text-xl font-semibold">Include Description?</h2>
+      <div class="flex items-center mb-8 rounded-xl">
+        <label
+          for="descriptionToggle"
+          class="px-1 text-md font-semibold text-gray-800"
+        >
+          Yes
+        </label>
+        <input
+          type="checkbox"
+          id="descriptionToggle"
+          class="form-checkbox h-5 w-5 text-indigo-600"
+        />
+      </div>
+
+      <!-- Sorting Selection -->
+      <h2 class="text-xl font-semibold mb-4">
+        How would you like the results sorted?
+      </h2>
+      <select
+        id="sortField"
+        class="w-full p-3 border rounded-xl mb-8 shadow-sm"
+      >
+        <option value="StartDate">Start Date</option>
+        <option value="Ages">Ages</option>
+        <option value="Class">Class</option>
+        <option value="Days">Days</option>
+        <option value="Description">Description</option>
+        <option value="Duration">Duration</option>
+        <option value="EndDate">End Date</option>
+        <option value="Openings">Openings</option>
+        <option value="Session">Session</option>
+        <option value="StartTime">Start Time</option>
+        <option value="Tuition">Tuition</option>
+      </select>
+
+      <!-- Submit Button -->
+      <button
+        id="submit"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300"
+      >
+        Get Classes
+      </button>
+      <div id="results" class="mt-10"></div>
+    </div>
+
+    <script>
+      let selectedClassType = "";
+
+      // Toggle class type button active state
+      document.querySelectorAll("#classTypeButtons .btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          // Reset all buttons to inactive
+          document.querySelectorAll("#classTypeButtons .btn").forEach((btn) => {
+            btn.classList.remove("bg-indigo-600", "text-white");
+            btn.classList.add("bg-gray-300", "text-gray-700");
+          });
+          // Activate the clicked button
+          button.classList.add("bg-indigo-600", "text-white");
+          button.classList.remove("bg-gray-300", "text-gray-700");
+
+          // Update selected class type
+          selectedClassType = button.getAttribute("data-type");
+        });
+      });
+
+      // Handle form submission
+      document.getElementById("submit").addEventListener("click", () => {
+        const sortBy = document.getElementById("sortField").value;
+        const session = document.getElementById("sessionField").value;
+        const includeDescription =
+          document.getElementById("descriptionToggle").checked;
+
+        const queryParams = new URLSearchParams({
+          OrgID: "554798",
+        });
+
+        if (selectedClassType) {
+          queryParams.append("Cat1", selectedClassType);
+        }
+
+        if (sortBy) {
+          queryParams.append("sort", sortBy);
+        }
+
+        if (session) {
+          queryParams.append("Session", session);
+        }
+
+        if (includeDescription) {
+          queryParams.append("showcols", "Description");
+        } else {
+          queryParams.append("hidecols", "Description");
+        }
+
+        const url = `https://app.jackrabbitclass.com/jr3.0/Openings/OpeningsJS?${queryParams.toString()}`;
+
+        // Show loading indicator
+        const submitButton = document.getElementById("submit");
+        submitButton.textContent = "Loading...";
+        submitButton.disabled = true;
+
+        // Redirect and reset form
+        // window.location.href = url;
+
+        // Send request to your backend instead of redirecting
+        fetch(`/jackrabbit?${queryParams.toString()}`)
+          .then((res) => res.json())
+          .then((data) => {
+            // Show the results below the form
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = ""; // clear previous
+
+            data.classes.forEach((cls) => {
+              const div = document.createElement("div");
+              div.className = "mb-6 p-4 rounded-xl bg-gray-100 shadow";
+
+              div.innerHTML = `
+        <h3 class="text-lg font-bold text-indigo-700">${cls.class}</h3>
+        <p class="text-gray-700"><strong>Days:</strong> ${cls.days} @ ${
+                cls.times
+              }</p>
+        <p class="text-gray-700"><strong>Ages:</strong> ${cls.ages}</p>
+        <p class="text-gray-700"><strong>Session:</strong> ${cls.session}</p>
+        <p class="text-gray-700"><strong>Openings:</strong> ${cls.openings}</p>
+        ${
+          cls.description
+            ? `<p class="mt-2 text-sm text-gray-600">${cls.description}</p>`
+            : ""
+        }
+        <a href="${
+          cls.register
+        }" target="_blank" class="text-indigo-600 font-semibold mt-2 inline-block">Register</a>
+      `;
+              resultsContainer.appendChild(div);
+            });
+
+            // Reset button
+            submitButton.textContent = "Get Classes";
+            submitButton.disabled = false;
+          })
+          .catch((err) => {
+            console.error("Error fetching classes:", err);
+            alert("Something went wrong!");
+            submitButton.textContent = "Get Classes";
+            submitButton.disabled = false;
+          });
+
+        setTimeout(() => {
+          submitButton.textContent = "Get Classes";
+          submitButton.disabled = false;
+          document.getElementById("sessionField").selectedIndex = 0;
+          document.getElementById("sortField").selectedIndex = 0;
+          document.getElementById("descriptionToggle").checked = false;
+
+          document.getElementById("allClasses").click();
+        }, 50);
+      });
+    </script>
+  </body>
+</html>
