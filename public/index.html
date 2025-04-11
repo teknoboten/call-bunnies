@@ -198,7 +198,7 @@
 
             data.classes.forEach((cls) => {
               const div = document.createElement("div");
-              div.className = "mb-6 p-4 rounded-xl bg-white-100 shadow";
+              div.className = "mb-4 p-4 rounded-xl bg-white-100 shadow";
 
               div.innerHTML = `
         <h2 class="text-3xl font-bold text-awg-teal" style="font-family: 'Tiller Bold';">${
@@ -212,13 +212,13 @@
         <p class="text-gray-700"><strong>Openings:</strong> ${cls.openings}</p>
         ${
           cls.description
-            ? `<p class="mt-2 text-sm text-gray-600">${cls.description}</p>`
-            : ""
+            ? `<p class="my-2 text-sm text-gray-600">${cls.description}</p>`
+            : `<p class="my-2 text-sm text-gray-600">Details forthcoming</p>`
         }
         <a href="${
           cls.register
-        }" target="_blank" class="text-indigo-600 font-semibold mt-2 inline-block">Register</a>
-      `;
+        }" target="_blank" class="btn px-6 py-1 rounded-md font-semibold bg-awg-plum text-white ">Register</a>
+            `;
               resultsContainer.appendChild(div);
             });
 
