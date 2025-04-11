@@ -198,10 +198,12 @@
 
             data.classes.forEach((cls) => {
               const div = document.createElement("div");
-              div.className = "mb-6 p-4 rounded-xl bg-gray-100 shadow";
+              div.className = "mb-6 p-4 rounded-xl bg-white-100 shadow";
 
               div.innerHTML = `
-        <h3 class="text-lg font-bold text-indigo-700">${cls.class}</h3>
+        <h2 class="text-3xl font-bold text-awg-teal" style="font-family: 'Tiller Bold';">${
+          cls.class
+        }</h3>
         <p class="text-gray-700"><strong>Days:</strong> ${cls.days} @ ${
                 cls.times
               }</p>
