@@ -7,6 +7,33 @@ const app = express();
 app.use(express.static("public"));
 app.use(cors());
 
+//make a pretty date range
+function formatDateRange(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  if (isNaN(startDate) || isNaN(endDate)) return `${start} – ${end}`;
+
+  const sameMonth = startDate.getMonth() === endDate.getMonth();
+  const sameYear = startDate.getFullYear() === endDate.getFullYear();
+
+  const shortMonthDay = (date) =>
+    date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+  const fullFormat = (date) =>
+    date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+  if (sameYear) {
+    return `${shortMonthDay(startDate)} – ${fullFormat(endDate)}`;
+  }
+
+  return `${fullFormat(startDate)} – ${fullFormat(endDate)}`;
+}
+
 app.get("/jackrabbit", async (req, res) => {
   const params = new URLSearchParams(req.query);
   const jackrabbitURL = `https://app.jackrabbitclass.com/jr3.0/Openings/OpeningsJS?${params.toString()}`;
@@ -37,6 +64,10 @@ app.get("/jackrabbit", async (req, res) => {
         endDate: row.find('td[data-title="Class Ends"]').text().trim(),
         session: row.find('td[data-title="Session"]').text().trim(),
         tuition: row.find('td[data-title="Tuition"]').text().trim(),
+        dateRange: formatDateRange(
+          row.find('td[data-title="Class Starts"]').text().trim(),
+          row.find('td[data-title="Class Ends"]').text().trim()
+        ),
       });
     });
 
