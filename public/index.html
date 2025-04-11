@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jackrabbit Class Getter</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              awg: {
+                teal: "#025959",
+                gold: "#F2C879",
+                plum: "#731b55",
+              },
+            },
+          },
+        },
+      };
+    </script>
   </head>
 
   <body
@@ -21,21 +36,21 @@
       </h2>
       <div class="flex flex-wrap gap-4 mb-8" id="classTypeButtons">
         <button
-          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-indigo-600 text-white"
+          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-awg-teal text-white transition duration-300 transform hover:scale-105"
           id="allClasses"
           data-type=""
         >
           All Classes
         </button>
         <button
-          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-gray-300 text-gray-700"
+          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-gray-500 text-white transition duration-300 transform hover:scale-105"
           id="camps"
           data-type="Camp"
         >
           Camps
         </button>
         <button
-          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-gray-300 text-gray-700"
+          class="btn px-6 py-2 rounded-xl font-semibold transition duration-300 bg-gray-500 text-white transition duration-300 transform hover:scale-105"
           id="afterschool"
           data-type="After%School%DnD"
         >
@@ -107,7 +122,7 @@
       <!-- Submit Button -->
       <button
         id="submit"
-        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300"
+        class="w-full bg-awg-teal hover:bg-awg-plum text-white font-bold py-3 px-6 rounded-xl transition duration-300"
       >
         Get Classes
       </button>
@@ -122,13 +137,13 @@
         button.addEventListener("click", () => {
           // Reset all buttons to inactive
           document.querySelectorAll("#classTypeButtons .btn").forEach((btn) => {
-            btn.classList.remove("bg-indigo-600", "text-white");
-            btn.classList.add("bg-gray-300", "text-gray-700");
+            btn.classList.remove("bg-awg-teal");
+            btn.classList.add("bg-gray-500");
           });
-          // Activate the clicked button
-          button.classList.add("bg-indigo-600", "text-white");
-          button.classList.remove("bg-gray-300", "text-gray-700");
 
+          // Activate the clicked button
+          button.classList.remove("bg-gray-500");
+          button.classList.add("bg-awg-teal");
           // Update selected class type
           selectedClassType = button.getAttribute("data-type");
         });
